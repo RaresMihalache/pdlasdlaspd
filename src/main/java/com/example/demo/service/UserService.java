@@ -1,0 +1,61 @@
+package com.example.demo.service;
+
+import com.example.demo.model.Owner;
+import com.example.demo.model.PetSitter;
+import com.example.demo.model.User;
+import com.example.demo.repository.OwnerRepo;
+import com.example.demo.repository.SitterRepo;
+import com.example.demo.repository.UserRepo;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+@AllArgsConstructor
+public class UserService {
+
+    private UserRepo userRepo;
+    private OwnerRepo ownerRepo;
+    private SitterRepo sitterRepo;
+    private PasswordEncoder passwordEncoder;
+
+
+    // -1 -> already found user with given username
+    // -2 -> passwords don't match; else, user created successfully!
+    public String registerUser(User user){
+        Optional<User> foundUserByName = userRepo.findByUsername(user.getUsername());
+        if(foundUserByName.isPresent()){
+            System.out.println("User with name " + foundUserByName.get().getUsername() + " already exists!");
+            return "-1";
+        }
+        if(user.getPassword().compareTo(user.getConfirmPassword()) != 0){
+            System.out.println("Password don't match!");
+            return "-2"; // passwords do not match!
+        }
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        user.setConfirmPassword(user.getPassword());
+        if(user.getRole() == null)
+            return "-3";
+        userRepo.save(user);
+        if(user.getRole().compareTo("OWNER") == 0){
+            Owner owner = new Owner();
+            owner.setUsername(user.getUsername());
+            owner.setPassword(user.getPassword());
+            owner.setRole(user.getRole());
+            ownerRepo.save(owner);
+        }
+        else{
+            PetSitter sitter = new PetSitter();
+            sitter.setUsername(user.getUsername());
+            sitter.setPassword(user.getPassword());
+            sitter.setRole(user.getRole());
+            sitterRepo.save(sitter);
+        }
+        return user.getId();
+    }
+
+}
