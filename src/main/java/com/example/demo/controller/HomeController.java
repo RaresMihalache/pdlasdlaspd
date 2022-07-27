@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.UserDTO;
 import com.example.demo.model.Owner;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
@@ -35,8 +36,8 @@ public class HomeController {
     }
 
     @PostMapping("register")
-    public String submitForm(@ModelAttribute("user") User user){
-        String message = userService.registerUser(user);
+    public String submitForm(@ModelAttribute("userDTO") UserDTO userDTO){
+        String message = userService.registerUser(userDTO);
         if(message == "-1")
             return "register_found_user";
         else if(message == "-2")

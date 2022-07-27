@@ -30,7 +30,8 @@ public class Owner extends User{
     private String password;*/
 
     @Column(nullable = false)
-    private int balance;
+    @Builder.Default
+    private int balance = 0;
 
     /*@Column
     @NonNull

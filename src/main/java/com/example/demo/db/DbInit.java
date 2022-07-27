@@ -40,7 +40,6 @@ public class DbInit implements CommandLineRunner {
         Owner dan = Owner.builder()
                 .username("dan")
                 .password(passwordEncoder.encode("dan1234"))
-                .confirmPassword(passwordEncoder.encode("dan1234"))
                 .active(1)
                 .role("OWNER")
                 .build();
@@ -59,7 +58,6 @@ public class DbInit implements CommandLineRunner {
                 .id(dan.getId())
                 .username(dan.getUsername())
                 .password(dan.getPassword())
-                .confirmPassword(dan.getPassword())
                 .role(dan.getRole())
                 .build();
         /*User user2 = User.builder()
@@ -73,7 +71,7 @@ public class DbInit implements CommandLineRunner {
         List<User> users = Arrays.asList(user1);
 
         // Save to db
-        this.userRepo.saveAll(users);
+        this.ownerRepo.saveAll(List.of(dan));
 /*        this.ownerRepo.saveAll(owners);
         this.sitterRepo.saveAll(sitters);*/
     }

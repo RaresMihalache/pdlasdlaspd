@@ -11,7 +11,7 @@
                 <i class="fa fa-user"></i> Create new Account
             </div>
             <div class="card-block" style="padding: 24px;">
-                <form action="#" th:action="@{/register}" th:object="${user}" method="post">
+                <form action="#" th:action="@{/register}" th:object="${userDTO}" method="post">
                     <label>Username: </label>
                     <input type="text" class="form-control" th:field="*{username}" placeholder="Username"/> <br/>
 
@@ -19,7 +19,7 @@
                     <input type="password" class="form-control" th:field="*{password}" placeholder="Password"/> <br/>
 
                     <label>Confirm Password: </label>
-                    <input type="password" class="form-control" th:field="*{confirmPassword}" placeholder="Password"/> <br/>
+                    <input type="password" class="form-control" th:field="*{password}" placeholder="Password"/> <br/>
 
                     <label>Role: </label> <br />
                     <div class="custom-control custom-radio custom-control-inline">

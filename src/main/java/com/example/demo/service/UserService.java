@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.UserDTO;
 import com.example.demo.model.Owner;
 import com.example.demo.model.PetSitter;
 import com.example.demo.model.User;
@@ -26,7 +27,7 @@ public class UserService {
 
     // -1 -> already found user with given username
     // -2 -> passwords don't match; else, user created successfully!
-    public String registerUser(User user){
+    public String registerUser(UserDTO user){
         Optional<User> foundUserByName = userRepo.findByUsername(user.getUsername());
         if(foundUserByName.isPresent()){
             System.out.println("User with name " + foundUserByName.get().getUsername() + " already exists!");
@@ -37,25 +38,23 @@ public class UserService {
             return "-2"; // passwords do not match!
         }
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        user.setConfirmPassword(user.getPassword());
+        //user.setConfirmPassword(user.getPassword());
         if(user.getRole() == null)
             return "-3";
-        userRepo.save(user);
         if(user.getRole().compareTo("OWNER") == 0){
             Owner owner = new Owner();
             owner.setUsername(user.getUsername());
             owner.setPassword(user.getPassword());
             owner.setRole(user.getRole());
-            ownerRepo.save(owner);
+            return ownerRepo.save(owner).getId();
         }
         else{
             PetSitter sitter = new PetSitter();
             sitter.setUsername(user.getUsername());
             sitter.setPassword(user.getPassword());
             sitter.setRole(user.getRole());
-            sitterRepo.save(sitter);
+            return sitterRepo.save(sitter).getId();
         }
-        return user.getId();
     }
 
 }
